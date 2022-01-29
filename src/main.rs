@@ -1,4 +1,3 @@
-#![allow(unused)]
 use {
     axum::{
         extract::{Json, Path, Query},
@@ -15,7 +14,8 @@ async fn main() {
         .route("/foo", get(get_foo).post(post_foo))
         .route("/foo/bar", get(get_foo_bar))
         .route("/path", get(path))
-        .route("/query", get(query));
+        .route("/query", get(query))
+        .route("/query_json", get(json));
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
         .serve(app.into_make_service())
         .await
@@ -38,8 +38,8 @@ async fn get_foo_bar() -> &'static str {
     "Hello, World from GET foo/bar!"
 }
 
-async fn path(Path(user_id): Path<u32>) {}
+async fn path(Path(_user_id): Path<u32>) {}
 
-async fn query(Query(params): Query<HashMap<String, String>>) {}
+async fn query(Query(_params): Query<HashMap<String, String>>) {}
 
 async fn json(Json(_payload): Json<serde_json::Value>) {}
