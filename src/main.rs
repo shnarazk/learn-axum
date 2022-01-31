@@ -16,9 +16,10 @@ async fn main() {
         .route("/", get(root))
         .route("/foo", get(get_foo).post(post_foo))
         .route("/foo/bar", get(get_foo_bar))
+        .route("/json", get(json))
         .route("/path", get(path))
         .route("/query", get(query))
-        .route("/query_json", get(json));
+        .route("/query_json", get(query_json));
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
         .serve(app.into_make_service())
         .await
@@ -41,10 +42,16 @@ async fn get_foo_bar() -> &'static str {
     "Hello, World from GET foo/bar!"
 }
 
+async fn json() -> Json<serde_json::Value> {
+    Json(json!({ "data": 42 }))
+}
+
 async fn path(Path(_user_id): Path<u32>) {}
 
-async fn query(Query(_params): Query<HashMap<String, String>>) {}
+async fn query(Query(_params): Query<HashMap<String, String>>) -> &'static str {
+    "this is query\n"
+}
 
-async fn json(Json(_payload): Json<serde_json::Value>) -> Json<serde_json::Value> {
+async fn query_json(Json(_payload): Json<serde_json::Value>) -> Json<serde_json::Value> {
     Json(json!({ "data": 42 }))
 }
