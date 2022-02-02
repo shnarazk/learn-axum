@@ -17,7 +17,7 @@ async fn main() {
         .route("/foo", get(get_foo).post(post_foo))
         .route("/foo/bar", get(get_foo_bar))
         .route("/json", get(json))
-        .route("/path", get(path))
+        .route("/path/:id", get(path))
         .route("/query", get(query))
         .route("/query_json", get(query_json));
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
@@ -46,9 +46,13 @@ async fn json() -> Json<serde_json::Value> {
     Json(json!({ "data": 42 }))
 }
 
-async fn path(Path(_user_id): Path<u32>) {}
+async fn path(Path(user_id): Path<u32>) -> &'static str {
+    dbg!(user_id);
+    "ok"
+}
 
-async fn query(Query(_params): Query<HashMap<String, String>>) -> &'static str {
+async fn query(Query(params): Query<HashMap<String, String>>) -> &'static str {
+    dbg!(params);
     "this is query\n"
 }
 
