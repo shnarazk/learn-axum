@@ -3,8 +3,8 @@ use {
         body::Body,
         extract::{Json, Path, Query},
         http::Request,
-        routing::get,
         response::Response,
+        routing::get,
         // response::Json,
         Router,
     },
@@ -27,10 +27,14 @@ async fn main() {
         .route("/path/:id", get(path))
         .route("/query", get(query))
         .route("/query_json", get(query_json))
-        .route("/m", get(|| async { dbg!(); }))
-        .layer(layer_fn(|inner| MyMiddleware { inner }))
-        ;
-        
+        .route(
+            "/m",
+            get(|| async {
+                dbg!();
+            }),
+        )
+        .layer(layer_fn(|inner| MyMiddleware { inner }));
+
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
         .serve(app.into_make_service())
         .await

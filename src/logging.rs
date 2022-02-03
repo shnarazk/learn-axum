@@ -1,5 +1,4 @@
 /// https://docs.rs/tower/0.4.6/tower/trait.Layer.html#log
-
 use {
     axum::{body::Body, http::Request, response::Response},
     futures::future::BoxFuture,
