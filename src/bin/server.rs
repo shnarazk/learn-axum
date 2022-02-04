@@ -1,14 +1,10 @@
-mod logging;
-mod sample_middle;
-
 use {
     axum::{
         extract::{Json, Path, Query},
         routing::get,
         Router,
     },
-    logging::LogService,
-    sample_middle::MyMiddleware,
+    learn_axum::{logging::LogService, sample_middle::MyMiddleware},
     serde_json::json,
     std::collections::HashMap,
     tower::layer::layer_fn,
@@ -69,6 +65,7 @@ async fn query(Query(params): Query<HashMap<String, String>>) -> &'static str {
     "this is query\n"
 }
 
-async fn query_json(Json(_payload): Json<serde_json::Value>) -> Json<serde_json::Value> {
+async fn query_json(Json(payload): Json<serde_json::Value>) -> Json<serde_json::Value> {
+    dbg!(payload);
     Json(json!({ "data": 42 }))
 }
