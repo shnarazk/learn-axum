@@ -9,6 +9,7 @@ use {
         Router,
     },
     futures::future::BoxFuture,
+    learn_axum::logging::LogService,
     serde_json::json,
     std::{
         collections::HashMap,
@@ -33,6 +34,7 @@ async fn main() {
                 dbg!();
             }),
         )
+        .layer(layer_fn(|service| LogService::new(service, "test")))
         .layer(layer_fn(|inner| MyMiddleware { inner }));
 
     axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())

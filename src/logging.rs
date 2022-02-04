@@ -6,10 +6,12 @@ use {
     tower::{Layer, Service},
 };
 
+#[derive(Clone, Debug)]
 pub struct LogLayer {
     target: &'static str,
 }
 
+#[derive(Clone, Debug)]
 pub struct LogService<S> {
     target: &'static str,
     service: S,
@@ -25,6 +27,11 @@ impl<S> Layer<S> for LogLayer {
     }
 }
 
+impl<S> LogService<S> {
+    pub fn new(service: S, target: &'static str) -> Self {
+        LogService { target, service }
+    }
+}
 impl<S> Service<Request<Body>> for LogService<S>
 where
     S: Service<Request<Body>, Response = Response> + Clone + Send + 'static,
