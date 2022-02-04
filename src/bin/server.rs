@@ -1,7 +1,7 @@
 use {
     axum::{
         extract::{Json, Path, Query},
-        routing::get,
+        routing::{get, post},
         Router,
     },
     learn_axum::{logging::LogService, sample_middle::MyMiddleware},
@@ -19,7 +19,7 @@ async fn main() {
         .route("/json", get(json))
         .route("/path/:id", get(path))
         .route("/query", get(query))
-        .route("/query_json", get(query_json))
+        .route("/query_json", post(query_json))
         .route(
             "/m",
             get(|| async {
