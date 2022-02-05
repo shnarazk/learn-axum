@@ -3,7 +3,6 @@ Learning Axum framework
 
 - [Axum](https://docs.rs/axum/latest/axum/)
 - [Tokio](https://tokio.rs)
-- [Yew](https://yew.rs)
 
 ### Combining Axum, Hyper, Tonic, and Tower for hybrid web/gRPC apps
 - [part 1: Overview of Tower](https://www.fpcomplete.com/blog/axum-hyper-tonic-tower-part1/)
