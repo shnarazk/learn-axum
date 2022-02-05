@@ -4,7 +4,7 @@ use {
         routing::{get, post},
         Router,
     },
-    learn_axum::{logging::LogService, sample_middle::MyMiddleware},
+    learn_axum::{logging::LogService, sample_middle::MyMiddleware, PORT},
     serde_json::json,
     std::collections::HashMap,
     tower::layer::layer_fn,
@@ -29,7 +29,7 @@ async fn main() {
         .layer(layer_fn(|service| LogService::new(service, "test")))
         .layer(layer_fn(|inner| MyMiddleware { inner }));
 
-    axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
+    axum::Server::bind(&PORT.parse().unwrap())
         .serve(app.into_make_service())
         .await
         .unwrap();

@@ -31,7 +31,11 @@ impl<S> Layer<S> for LogLayer {
 
 impl<S> LogService<S> {
     pub fn new(service: S, target: &'static str) -> Self {
-        LogService { target, service, log: Vec::new() }
+        LogService {
+            target,
+            service,
+            log: Vec::new(),
+        }
     }
 }
 impl<S> Service<Request<Body>> for LogService<S>
@@ -48,7 +52,8 @@ where
         self.service.poll_ready(cx)
     }
     fn call(&mut self, req: Request<Body>) -> Self::Future {
-        self.log.push(format!("Log{}:called {:?}", self.target, req));
+        self.log
+            .push(format!("Log{}:called {:?}", self.target, req));
         dbg!(&self.log);
         let clone = self.service.clone();
         let mut inner = std::mem::replace(&mut self.service, clone);
