@@ -15,6 +15,7 @@ pub struct LogLayer {
 pub struct LogService<S> {
     target: &'static str,
     service: S,
+    log: Vec<String>,
 }
 
 impl<S> Layer<S> for LogLayer {
@@ -23,13 +24,14 @@ impl<S> Layer<S> for LogLayer {
         LogService {
             target: self.target,
             service,
+            log: Vec::new(),
         }
     }
 }
 
 impl<S> LogService<S> {
     pub fn new(service: S, target: &'static str) -> Self {
-        LogService { target, service }
+        LogService { target, service, log: Vec::new() }
     }
 }
 impl<S> Service<Request<Body>> for LogService<S>
@@ -42,10 +44,12 @@ where
     type Future = BoxFuture<'static, Result<Self::Response, Self::Error>>;
 
     fn poll_ready(&mut self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
+        self.log.push("check poll_ready".to_string());
         self.service.poll_ready(cx)
     }
     fn call(&mut self, req: Request<Body>) -> Self::Future {
-        println!("Log:{:?}: called {:?}", self.target, req);
+        self.log.push(format!("Log{}:called {:?}", self.target, req));
+        dbg!(&self.log);
         let clone = self.service.clone();
         let mut inner = std::mem::replace(&mut self.service, clone);
         Box::pin(async move {
