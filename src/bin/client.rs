@@ -8,21 +8,15 @@ use {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let json = json!({ "id": 1 });
-    dbg!(format!("{}/query_json", PORT));
-    let mut request = Request::builder()
+    let request = Request::builder()
         .method(Method::POST)
         .uri(Uri::from_str(&format!("http://{}/query_json", PORT))?)
+        .header("Content-Type", HeaderValue::from_static("application/json"))
         .body(Body::from(json.to_string()))
         .unwrap();
-    request
-        .headers_mut()
-        .insert("Content-Type", HeaderValue::from_static("application/json"));
     let res = Client::new().request(request).await?;
-    // And then, if the request gets a response...
-    println!("status: {}", res.status());
-    // Concatenate the body stream into a single buffer...
+    let status = res.status();
     let buf = hyper::body::to_bytes(res).await?;
-
-    println!("body: {:?}", buf);
+    println!("got status: {}, body: {buf:?}", status);
     Ok(())
 }

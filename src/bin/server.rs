@@ -20,15 +20,8 @@ async fn main() {
         .route("/path/:id", get(path))
         .route("/query", get(query))
         .route("/query_json", post(query_json))
-        .route(
-            "/m",
-            get(|| async {
-                dbg!();
-            }),
-        )
         .layer(layer_fn(|service| LogService::new(service, "test")))
         .layer(layer_fn(MyMiddleware::new));
-
     axum::Server::bind(&PORT.parse().unwrap())
         .serve(app.into_make_service())
         .await
