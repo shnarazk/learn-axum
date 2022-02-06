@@ -8,7 +8,13 @@ use {
 
 #[derive(Clone, Debug)]
 pub struct MyMiddleware<S> {
-    pub inner: S,
+    inner: S,
+}
+
+impl<S> MyMiddleware<S> {
+    pub fn new(inner: S) -> Self {
+        Self { inner }
+    }
 }
 
 impl<S> Service<Request<Body>> for MyMiddleware<S>

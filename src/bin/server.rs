@@ -27,7 +27,7 @@ async fn main() {
             }),
         )
         .layer(layer_fn(|service| LogService::new(service, "test")))
-        .layer(layer_fn(|inner| MyMiddleware { inner }));
+        .layer(layer_fn(MyMiddleware::new));
 
     axum::Server::bind(&PORT.parse().unwrap())
         .serve(app.into_make_service())
