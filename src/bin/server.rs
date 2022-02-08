@@ -12,6 +12,7 @@ use {
 
 #[tokio::main]
 async fn main() {
+    console_subscriber::init();
     let app = Router::new()
         .route("/", get(root))
         .route("/foo", get(get_foo).post(post_foo))
