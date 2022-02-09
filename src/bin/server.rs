@@ -24,26 +24,21 @@ struct State {
 async fn main() {
     console_subscriber::init();
     let shared_state = Arc::new(Mutex::new(State::default()));
+    macro_rules! with_state {
+        ($handler: ident) => {{
+            let shared_state = Arc::clone(&shared_state);
+            move |body| $handler(body, Arc::clone(&shared_state))
+        }};
+    }
+
     let app = Router::new()
         .route("/", get(root))
         .route("/foo", get(get_foo).post(post_foo))
         .route("/foo/bar", get(get_foo_bar))
         .route("/json", get(json))
         .route("/path/:id", get(path))
-        .route(
-            "/query",
-            get({
-                let shared_state = Arc::clone(&shared_state);
-                move |body| query(body, Arc::clone(&shared_state))
-            }),
-        )
-        .route(
-            "/query_json",
-            post({
-                let shared_state = Arc::clone(&shared_state);
-                move |body| query_json(body, Arc::clone(&shared_state))
-            }),
-        )
+        .route("/query", get(with_state!(query)))
+        .route("/query_json", post(with_state!(query_json)))
         .layer(layer_fn(|service| LogService::new(service, "test")))
         .layer(layer_fn(MyMiddleware::new))
         .layer(AddExtensionLayer::new(shared_state));
