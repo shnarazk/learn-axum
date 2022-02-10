@@ -8,7 +8,7 @@ use {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     for _ in 0..2 {
-        let json = json!({ "id": 1 });
+        let json = json!({ "id": 1usize });
         let request = Request::builder()
             .method(Method::POST)
             .uri(Uri::from_str(&format!("http://{}/query_json", PORT))?)
@@ -20,5 +20,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
         let buf = hyper::body::to_bytes(res).await?;
         println!("got status: {}, body: {buf:?}", status);
     }
+    {
+        let res = Client::new().get("http://fakestoreapi.com/products".parse()?).await?;
+        let status = res.status();
+        let buf = hyper::body::to_bytes(res).await?;
+        println!("got status: {}, body: {buf:?}", status);
+    }
     Ok(())
+
+
+
 }
