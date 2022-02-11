@@ -17,7 +17,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
                 let res = client.get(url.parse()?).await?;
                 let buf = hyper::body::to_bytes(res).await?;
                 let str = String::from_utf8_lossy(buf.as_ref());
-                println!("{str}");
+                print!("{str}");
             }
         }
     }
