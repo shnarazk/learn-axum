@@ -9,7 +9,7 @@ use {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-    if false {
+    if true {
         for _ in 0..2 {
             let json = json!({ "id": 1usize });
             let request = Request::builder()
@@ -24,37 +24,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
             println!("got status: {}, body: {buf:?}", status);
         }
     }
-    {
+    if false {
         let res = Client::new()
             .get("http://fakestoreapi.com/products".parse()?)
             .await?;
         let status = res.status();
         let buf = hyper::body::to_bytes(res).await?;
         println!("got status: {}, body: {buf:?}", status);
-    }
-    {
-        let target = Regex::new("https://ckan[^\"]+csv").expect("wrong regex");
-        let https = HttpsConnector::new();
-        let client = Client::builder().build::<_, hyper::Body>(https);
-        let res = client
-            .get(
-                "https://ckan.open-governmentdata.org/dataset/401000_pref_fukuoka_covid19_patients"
-                    .parse()?,
-            )
-            .await?;
-        let status = res.status();
-        println!("got status: {}", status);
-        let buf: axum::body::Bytes = hyper::body::to_bytes(res).await?;
-        let str = String::from_utf8_lossy(buf.as_ref());
-        for l in str.lines() {
-            if let Some(rurl) = target.captures(l) {
-                let url = &rurl[0];
-                println!("{url}");
-                let res = client.get(url.parse()?).await?;
-                let buf = hyper::body::to_bytes(res).await?;
-                println!("{buf:?}");
-            }
-        }
     }
     Ok(())
 }
