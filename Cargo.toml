@@ -6,6 +6,7 @@ edition = "2021"
 
 [dependencies]
 axum = "^0.4"
+bytes = "1.0"
 console-subscriber = "0.1"
 futures = "0.3"
 futures-util = { version = "0.3", default-features = false, features = ["alloc"] }
