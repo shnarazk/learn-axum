@@ -19,3 +19,5 @@ serde_json = "^1.0"
 tokio = { version = "1", features = ["full", "tracing"] }
 tower = { version = "0.4.11", default-features = false, features = ["util", "buffer", "make"] }
 
+[profile.release]
+strip = true
