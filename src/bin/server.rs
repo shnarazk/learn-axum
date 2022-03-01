@@ -1,8 +1,7 @@
 use {
     axum::{
-        extract::{Json, Path, Query}, // Extension,
+        extract::{Extension, Json, Path, Query}, // Extension,
         routing::{get, post},
-        AddExtensionLayer,
         Router,
     },
     learn_axum::{logging::LogService, sample_middle::MyMiddleware, PORT},
@@ -41,7 +40,7 @@ async fn main() {
         .route("/query_json", post(with_state!(query_json)))
         .layer(layer_fn(|service| LogService::new(service, "test")))
         .layer(layer_fn(MyMiddleware::new))
-        .layer(AddExtensionLayer::new(shared_state));
+        .layer(Extension(shared_state));
 
     axum::Server::bind(&PORT.parse().unwrap())
         .serve(app.into_make_service())
