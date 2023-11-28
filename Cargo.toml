@@ -11,7 +11,7 @@ console-subscriber = "0.2"
 futures = "0.3"
 futures-util = { version = "0.3", default-features = false, features = ["alloc"] }
 hyper = { version = "^0.14", features = ["full"] }
-hyper-tls = "0.5"
+hyper-tls = "0.6"
 mini-redis = "0.4"
 regex = "1.5"
 serde = "^1"
